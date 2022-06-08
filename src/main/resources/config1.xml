@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id = "car" class="com.fastcampus.ch3.Car" >
+    <property name = "color" value ="red"/>
+    <property name="oil" value ="100"/>
+    <property name ="engine" ref="engine"/>
+    <property name = "doors">
+        <array value-type="com.fastcampus.ch3.Door">
+            <ref bean="door"/>
+            <ref bean="door"/>
+        </array>
+    </property>
+    </bean>
+    <bean id = "engine" class="com.fastcampus.ch3.Engine" />
+    <bean id = "door" class="com.fastcampus.ch3.Door" scope="prototype"/>
+
+</beans>
+
+<!--//getBean 할떄 기본적으로  Singleton이라 여러번 호출해도 같은 객체로 생성되는데
+/*
+*   <bean id = "car" class="com.fastcampus.ch3.Car" scope = "prototype"/> 겟빈할떄마다 새로운 객체를 생성하길원하면 protoType
+    <bean id = "engine" class="com.fastcampus.ch3.Engine" scope="singleton"/>*/
+
+     setter가 있기에 property 쓸수있다
+
+     contructure-arg 로 바꾸면 생성자로도 쓸수 있따-->
