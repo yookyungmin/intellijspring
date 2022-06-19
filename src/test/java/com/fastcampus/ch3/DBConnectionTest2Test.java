@@ -23,7 +23,7 @@ public class DBConnectionTest2Test {
     DataSource ds;
 
     @Test
-    public void springJdbcConnectionTest() throws  Exception{
+    public void springJdbcConnection() throws  Exception{
 
 
 //        ApplicationContext ac = new GenericXmlApplicationContext("file:src/main/webapp/WEB-INF/spring/**/root-context.xml"); //수동으로 가져옴
