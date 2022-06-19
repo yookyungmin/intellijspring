@@ -9,7 +9,20 @@ import java.sql.Connection;
 
 public class DBConnectionTest2 {
     public static void main(String[] args) throws Exception {
-
+//        // 스키마의 이름(springbasic)이 다른 경우 알맞게 변경
+//        String DB_URL = "jdbc:mysql://localhost:3306/springbasic?useUnicode=true&characterEncoding=utf8";
+//
+//        // DB의 userid와 pwd를 알맞게 변경
+//        String DB_USER = "asdf";
+//        String DB_PASSWORD = "1234";
+//        String DB_DRIVER = "com.mysql.jdbc.Driver";
+//
+//        DriverManagerDataSource ds = new DriverManagerDataSource();
+//        ds.setDriverClassName(DB_DRIVER);
+//        ds.setUrl(DB_URL);
+//        ds.setUsername(DB_USER);
+//        ds.setPassword(DB_PASSWORD);
+        //root.context.xml로 정보를 다주고 getBean으로 얻어올 것
 
         ApplicationContext ac = new GenericXmlApplicationContext("file:src/main/webapp/WEB-INF/spring/**/root-context.xml");
         DataSource ds = ac.getBean(DataSource.class);
@@ -18,5 +31,6 @@ public class DBConnectionTest2 {
 
         System.out.println("conn = " + conn);
     //    assertTrue(conn!=null);
+        //TDD 진행 위해선 우클릭 GO TO > Test > create new test
     }
 }
