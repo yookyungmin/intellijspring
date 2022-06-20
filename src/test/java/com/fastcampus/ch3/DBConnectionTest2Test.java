@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -26,14 +27,95 @@ public class DBConnectionTest2Test {
 
     @Test
     public void insertUserTest() throws  Exception{
-        User user = new User("asdf8", "1234", "abc", "aaaa@aaaa.com", new Date(), "fb", new Date());
+        User user = new User("asdf2", "1234", "abc", "aaaa@aaaa.com", new Date(), "fb", new Date());
         deleteAll();
         int rowCnt = insertUser(user); //빨간줄 에러 나오면, 아래 예외 선언되어있는데 try catch 없어서
 
-        assertTrue(rowCnt ==1); //성공 1 , 실패 0
+        assertTrue(rowCnt==1); //성공 1 , 실패 0  //작업 결과 확인
     }
 
-    private void deleteAll() {
+    @Test
+    public  void deleteUserTest() throws Exception{
+        deleteAll();
+        int rowCnt = deleteUser("asdf");
+        assertTrue(rowCnt==0);
+
+        User user = new User("asdf2", "1234", "abc", "aaaa@aaaa.com", new Date(), "fb", new Date());
+        rowCnt = insertUser(user);
+        assertTrue(rowCnt==1);
+
+        rowCnt = deleteUser(user.getId());
+        assertTrue(rowCnt==1);
+
+        assertTrue(selectUser(user.getId())==null);
+        
+
+
+    }
+    
+    //매개변수로 받은 사용자 정보로 user_info 테이블을 update하는메서드
+    public int updateUser(User user) throws Exception{
+        Connection conn = ds.getConnection(); //db 연결 가져오기
+
+
+        String sql = "select from user_info where id=?"; //실행할 sql문
+
+        return 0;
+    }
+    public int deleteUser(String id) throws Exception{
+        Connection conn = ds.getConnection(); //db 연결 가져오기
+        String sql = "delete from user_info where id=?"; //실행할 sql문
+        PreparedStatement pstmt = conn.prepareStatement(sql); // ? 사용 //SQL Injection 공격예방, 성능향상
+        pstmt.setString(1,id);
+       
+       // int rowCnt = pstmt.executeUpdate(); //insert, delete, update 일떄 사용
+        //return rowCnt;
+        
+        return pstmt.executeUpdate(); // 위 두줄과 같으
+        
+    }
+    @Test
+    public void selectUserTest()throws Exception{
+        deleteAll();
+        User user = new User("asdf2", "1234", "abc", "aaaa@aaaa.com", new Date(), "fb", new Date());
+        int rowCnt = insertUser(user); //빨간줄 에러 나오면, 아래 예외 선언되어있는데 try catch 없어서
+        User user2 = selectUser("asdf2");
+
+        assertTrue(user.getId().equals("asdf2"));
+    }
+    public User selectUser(String id) throws  Exception{ //참조형반환타입 //id를 주면 id에 해당하느사람의 정보를 가져옴
+        Connection conn = ds.getConnection(); //db 연결 가져오기
+
+
+        String sql = "select from user_info where id=?"; //실행할 sql문
+
+        PreparedStatement pstmt = conn.prepareStatement(sql); // ? 사용 //SQL Injection 공격예방, 성능향상
+        pstmt.setString(1,id);
+        ResultSet rs =  pstmt.executeQuery(); //select
+
+        if(rs.next()){ //쿼리 결과가 있으면
+            User user = new User();
+            user.setId(rs.getString(1));
+            user.setPwd(rs.getString(2));
+            user.setName(rs.getString(3));
+            user.setEmail((rs.getString(4)));
+            user.setBirth(new Date(rs.getDate(5).getTime()));
+            user.setSns(rs.getString(6));
+            user.setReg_date(rs.getDate(7));
+            //객체 새로 만들고 값을 새로 채워서 반환을 하는데, 결과가 없으면 rs.next()가 false 가 되어서 null반환
+            return user;
+        }
+        return null;
+    }
+    private void deleteAll() throws Exception{
+
+        Connection conn = ds.getConnection(); //db 연결 가져오기
+
+
+        String sql = "delete from user_info"; //실행할 sql문
+
+        PreparedStatement pstmt = conn.prepareStatement(sql); // ? 사용 //SQL Injection 공격예방, 성능향상
+              pstmt.executeUpdate(); //insert, delete, update 일떄 사용
     }
 
     //사용자 정보를 user_info 테이블에 저장하는 메서드
@@ -53,7 +135,7 @@ public class DBConnectionTest2Test {
         pstmt.setString(6, user.getSns()); //?에 해당하는 값들채우기
         
         int rowCnt = pstmt.executeUpdate(); //insert, delete, update 일떄 사용
-        return 0;
+        return rowCnt;
     }
     @Test
     public void springJdbcConnection() throws  Exception{
