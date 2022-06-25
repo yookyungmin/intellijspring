@@ -2,7 +2,7 @@ package com.fastcampus.ch3;
 
 import java.util.Date;
 import java.util.Objects;
-
+//클래스
 public class User {
     private String id;
     private String pwd;

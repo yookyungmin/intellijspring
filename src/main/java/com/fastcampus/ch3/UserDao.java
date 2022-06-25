@@ -1,5 +1,5 @@
 package com.fastcampus.ch3;
-
+//인터페이스
 public interface UserDao {
     
     

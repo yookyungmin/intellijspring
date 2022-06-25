@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
-
+//UserDao 인터페이스를 구현
 
 //@Component - @Controller , @Repositort, @Service @ControllerAdvice
 @Repository  //UserDao 라는 클래스가 bean으로 등록되려면
