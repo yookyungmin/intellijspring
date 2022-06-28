@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -118,6 +119,37 @@ public class DBConnectionTest2Test {
               pstmt.executeUpdate(); //insert, delete, update 일떄 사용
     }
 
+    @Test
+    public void transactionTest()throws Exception {
+        Connection conn=null;
+        try {
+            deleteAll();
+            conn = ds.getConnection(); //db 연결 가져오기
+            conn.setAutoCommit(false); //conn.setAutoCommit(true); 기본값
+//        insert into user_info (id, pwd, name, email, birth, sns, reg_date)
+//        values ('asdf2', '1234', 'smith', 'aaa@aaa.com', '2021-01-01','facebook',now());
+            String sql = "insert into user_info  values (?, ?, ?, ?, ?,?,now())"; //실행할 sql문
+
+            PreparedStatement pstmt = conn.prepareStatement(sql); // ? 사용 //SQL Injection 공격예방, 성능향상
+            pstmt.setString(1, "asdf");
+            pstmt.setString(2, "1234");
+            pstmt.setString(3, "abc");
+            pstmt.setString(4, "aaa@aaa.com");
+            pstmt.setDate(5, new java.sql.Date(new Date().getTime())); //getBirth 유틸 데이트인데 setDate가 sql 데이트로 필요하기떄문
+            pstmt.setString(6, "fb"); //?에 해당하는 값들채우기
+
+            int rowCnt = pstmt.executeUpdate(); //insert, delete, update 일떄 사용
+            pstmt.setString(1, "asdf");//1 첫번쨰 id
+            rowCnt = pstmt.executeUpdate(); //insert, delete, update 일떄 사용
+
+            conn.commit();
+        } catch (Exception e) {
+            conn.rollback();
+            e.printStackTrace();
+        } finally {
+        }
+
+    }
     //사용자 정보를 user_info 테이블에 저장하는 메서드
     public int insertUser(User user) throws Exception{
         Connection conn = ds.getConnection(); //db 연결 가져오기
