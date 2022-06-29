@@ -1,5 +1,7 @@
 package com.fastcampus.ch3.aop;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,13 +24,15 @@ public class AopMain {
     }
 }
 //매개변수 안에 Object.. args 동일한 파라미터를 여러개, 멘마지막에사용
-class MyAdvice{
+class MyAdvice{ //자동 추가할 코드
     Pattern p = Pattern.compile("a.*"); //일부 메서드에만 추가 하고싶으면 사용, a로 시작되는메서드 //regex 정규식이용
     boolean matches(Method m){
         Matcher matcher = p.matcher(m.getName());  //Matcher= 패턴 클래스를 받아 대상 문자열과 패턴이 일치하는 부분을 찾거나 판별
         return matcher.matches();
     }
     void invoke(Method m, Object obj, Object... args)throws Exception{ //MyClass 메서드내에 들어갈코드 추가 Object.. args
+        //if(m.getAnnotation(Transactional.class)!=null) 
+        // 메서드에서 Transactional이라는 에너테이션을 가져왔는데 null이 아니다=해당 메서드에 @Transactional 붙어있따 
         if(matches(m))// 메서드의 이름이 패턴하고 일치하는 경우만 문장 실행
         System.out.println("[before]{");
         
@@ -40,7 +44,7 @@ class MyAdvice{
 }
 class MyClass{  //동적으로생성해서 MyAdvice, invoke 메서드로 넘겨줄예정
 
-
+   // @Transactional
     void aaa(){
         System.out.println("aaa() is called");
     }
