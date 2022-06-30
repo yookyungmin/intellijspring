@@ -18,9 +18,12 @@ public class TxService {
 
     }
 
-    @Transactional(rollbackFor = Exception.class)//있어야 롤백이됨
+    @Transactional(rollbackFor = Exception.class)//있어야 롤백이됨- Exception 을 Rollback
+//    @Transactional//RuntimeException, Error만 rollback
     public void insertA1WithTxFail() throws Exception {
         a1Dao.insert(1, 100); //성공
+//        throw new RuntimeException(); //롤백 됨
+//        throw new Exception(); //롤백 안됨
         a1Dao.insert(1, 200); //실패
     }
 
